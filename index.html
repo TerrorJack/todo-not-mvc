@@ -1,75 +1,148 @@
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>Template • TodoMVC</title>
-		<link rel="stylesheet" href="node_modules/todomvc-common/base.css">
-		<link rel="stylesheet" href="node_modules/todomvc-app-css/index.css">
-		<!-- CSS overrides - remove if you don't need it -->
-		<link rel="stylesheet" href="css/app.css">
-	</head>
-	<body>
-		<section class="todoapp">
-			<header class="header">
-				<h1>todos</h1>
-				<input class="new-todo" placeholder="What needs to be done?" autofocus>
-			</header>
-			<!-- This section should be hidden by default and shown when there are todos -->
-			<section class="main">
-				<input id="toggle-all" class="toggle-all" type="checkbox">
-				<label for="toggle-all">Mark all as complete</label>
-				<ul class="todo-list">
-					<!-- These are here just to show the structure of the list items -->
-					<!-- List items should get the class `editing` when editing and `completed` when marked as completed -->
-					<li class="completed">
-						<div class="view">
-							<input class="toggle" type="checkbox" checked>
-							<label>Taste JavaScript</label>
-							<button class="destroy"></button>
-						</div>
-						<input class="edit" value="Create a TodoMVC template">
-					</li>
-					<li>
-						<div class="view">
-							<input class="toggle" type="checkbox">
-							<label>Buy a unicorn</label>
-							<button class="destroy"></button>
-						</div>
-						<input class="edit" value="Rule the web">
-					</li>
-				</ul>
-			</section>
-			<!-- This footer should hidden by default and shown when there are todos -->
-			<footer class="footer">
-				<!-- This should be `0 items left` by default -->
-				<span class="todo-count"><strong>0</strong> item left</span>
-				<!-- Remove this if you don't implement routing -->
-				<ul class="filters">
-					<li>
-						<a class="selected" href="#/">All</a>
-					</li>
-					<li>
-						<a href="#/active">Active</a>
-					</li>
-					<li>
-						<a href="#/completed">Completed</a>
-					</li>
-				</ul>
-				<!-- Hidden if no completed items are left ↓ -->
-				<button class="clear-completed">Clear completed</button>
-			</footer>
-		</section>
-		<footer class="info">
-			<p>Double-click to edit a todo</p>
-			<!-- Remove the below line ↓ -->
-			<p>Template by <a href="http://sindresorhus.com">Sindre Sorhus</a></p>
-			<!-- Change this out with your name and url ↓ -->
-			<p>Created by <a href="http://todomvc.com">you</a></p>
-			<p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
-		</footer>
-		<!-- Scripts here. Don't remove ↓ -->
-		<script src="node_modules/todomvc-common/base.js"></script>
-		<script src="js/app.js"></script>
-	</body>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>asterius • TodoMVC</title>
+	<link rel="stylesheet" href="node_modules/todomvc-common/base.css">
+	<link rel="stylesheet" href="node_modules/todomvc-app-css/index.css">
+</head>
+<body>
+<section class="todoapp">
+	<header class="header">
+		<h1>todos</h1>
+		<input class="new-todo" placeholder="What needs to be done?" autofocus>
+	</header>
+	<!-- This section should be hidden by default and shown when there are todos -->
+	<section class="main">
+		<input id="toggle-all" class="toggle-all" type="checkbox">
+		<label for="toggle-all">Mark all as complete</label>
+		<ul class="todo-list">
+			<!-- These are here just to show the structure of the list items -->
+			<!-- List items should get the class `editing` when editing and `completed` when marked as completed -->
+			<li class="completed">
+				<div class="view">
+					<input class="toggle" type="checkbox" checked>
+					<label>Taste JavaScript</label>
+					<button class="destroy"></button>
+				</div>
+				<input class="edit" value="Create a TodoMVC template">
+			</li>
+			<li>
+				<div class="view">
+					<input class="toggle" type="checkbox">
+					<label>Buy a unicorn</label>
+					<button class="destroy"></button>
+				</div>
+				<input class="edit" value="Rule the web">
+			</li>
+		</ul>
+	</section>
+	<!-- This footer should hidden by default and shown when there are todos -->
+	<footer class="footer">
+		<!-- This should be `0 items left` by default -->
+		<span class="todo-count"><strong>0</strong> item left</span>
+		<!-- Remove this if you don't implement routing -->
+		<ul class="filters">
+			<li>
+				<a class="selected" href="#/">All</a>
+			</li>
+			<li>
+				<a href="#/active">Active</a>
+			</li>
+			<li>
+				<a href="#/completed">Completed</a>
+			</li>
+		</ul>
+		<!-- Hidden if no completed items are left ↓ -->
+		<button class="clear-completed">Clear completed</button>
+	</footer>
+</section>
+<footer class="info">
+	<p>Double-click to edit a todo</p>
+	<!-- Remove the below line ↓ -->
+	<p>Template by <a href="http://sindresorhus.com">Sindre Sorhus</a></p>
+	<!-- Change this out with your name and url ↓ -->
+	<p>Created by <a href="http://todomvc.com">you</a></p>
+	<p>Part of <a href="http://todomvc.com">TodoMVC</a></p>
+</footer>
+<script src="node_modules/todomvc-common/base.js"></script>
+<script>
+	"use strict";
+
+	function getElementByClassName(name) {
+		return document.getElementsByClassName(name)[0];
+	}
+
+	const new_todo = getElementByClassName("new-todo"),
+			main = getElementByClassName("main"),
+			toggle_all = getElementByClassName("toggle-all"),
+			footer = getElementByClassName("footer"),
+			filters = getElementByClassName("filters"),
+			all_anchor = filters.children[0].children[0],
+			active_anchor = filters.children[1].children[0],
+			completed_anchor = filters.children[2].children[0],
+			clear_completed = getElementByClassName("clear-completed");
+
+	function buildElement(name, attrs = {}, children = []) {
+		const e = document.createElement(name);
+		Object.entries(attrs).forEach(([k, v]) => e.setAttribute(k, v));
+		children.forEach(child => e.appendChild(child));
+		return e;
+	}
+
+	function buildTodoEntryElement(todo) {
+		return buildElement("li", todo.completed ? {class: "completed"} : {}, [buildElement("div", {class: "view"}, [buildElement("input", Object.assign({
+			class: "toggle", type: "checkbox"
+		}, todo.completed ? {checked: true} : {})), buildElement("label", {}, [document.createTextNode(todo.text)]), buildElement("button", {class: "destroy"})]), buildElement("input", {
+			class: "edit", value: ""
+		})]);
+	}
+
+	function renderTodos(todos, rendered_todos = todos) {
+		const hide = todos.length === 0;
+		main.hidden = hide;
+		footer.hidden = hide;
+		getElementByClassName("todo-list").replaceWith(buildElement("ul", {class: "todo-list"}, rendered_todos.map(buildTodoEntryElement)));
+		const active_todos = todos.filter(todo => !todo.completed);
+		getElementByClassName("todo-count").replaceWith(buildElement("span", {class: "todo-count"}, [buildElement("strong", {}, [document.createTextNode(active_todos.length)]), document.createTextNode((active_todos.length === 1 ? " item" : " items") + " left")]));
+		clear_completed.hidden = todos.length === active_todos.length;
+	}
+
+	let todos = [];
+
+	renderTodos(todos);
+
+	new_todo.addEventListener("keypress", ev => {
+		if (ev.key === "Enter") {
+			const s = new_todo.value.trim();
+			if (s) {
+				new_todo.value = "";
+				todos.push({text: s, completed: false});
+				renderTodos(todos);
+			}
+		}
+	});
+
+	toggle_all.addEventListener("click", () => {
+		const completed_flag = todos[0].completed,
+				target_flag = todos.every(todo => todo.completed === completed_flag) ? !completed_flag : true;
+
+		for (let i = 0; i < todos.length; ++i) todos[i].completed = target_flag;
+		renderTodos(todos);
+
+	});
+
+	window.addEventListener("popstate", () => renderTodos(todos, todos.filter({
+		"": () => true,
+		"active": todo => !todo.completed,
+		"completed": todo => todo.completed
+	}[window.location.href.split("#/")[1] || ""])));
+
+	clear_completed.addEventListener("click", () => {
+		todos = todos.filter(todo => !todo.completed);
+		renderTodos(todos);
+	});
+</script>
+</body>
 </html>

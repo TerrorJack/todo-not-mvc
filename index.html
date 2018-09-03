@@ -108,6 +108,23 @@
 		getElementByClassName("todo-list").replaceWith(buildElement("ul", {class: "todo-list"}, todos.map(todo => buildTodoEntryElement(todo, mode))));
 		const active_todos = todos.filter(todo => !todo.completed);
 		getElementByClassName("todo-count").replaceWith(buildElement("span", {class: "todo-count"}, [buildElement("strong", {}, [document.createTextNode(active_todos.length)]), document.createTextNode((active_todos.length === 1 ? " item" : " items") + " left")]));
+		switch (mode) {
+			case "":
+				all_anchor.setAttribute("class", "selected");
+				active_anchor.removeAttribute("class");
+				completed_anchor.removeAttribute("class");
+				break;
+			case "active":
+				all_anchor.removeAttribute("class");
+				active_anchor.setAttribute("class", "selected");
+				completed_anchor.removeAttribute("class");
+				break;
+			case "completed":
+				all_anchor.removeAttribute("class");
+				active_anchor.removeAttribute("class");
+				completed_anchor.setAttribute("class", "selected");
+				break;
+		}
 		clear_completed.hidden = todos.length === active_todos.length;
 	}
 

@@ -152,6 +152,31 @@
 
 	});
 
+	main.addEventListener("click", ev => {
+		if (ev.target.tagName === "INPUT") {
+			const todo_entry = ev.target.parentElement.parentElement;
+			const i = Array.from(todo_entry.parentElement.childNodes).indexOf(todo_entry);
+			todos[i].completed = !todos[i].completed;
+			renderTodos(todos);
+		}
+	});
+
+	main.addEventListener("dblclick", ev => {
+		if (ev.target.tagName === "LABEL") {
+			const todo_entry = ev.target.parentElement.parentElement;
+			const i =
+					Array.from(todo_entry.parentElement.childNodes).indexOf(todo_entry);
+			todo_entry.setAttribute("class", "editing");
+			todo_entry.addEventListener("keypress", ev_k => {
+				if (ev_k.key === "Enter") {
+					console.log(ev.target.children[0].nodeValue);
+					todos[i].text = ev.target.children[0].nodeValue;
+					renderTodos(todos);
+				}
+			});
+		}
+	});
+
 	window.addEventListener("popstate", () => renderTodos(todos));
 
 	clear_completed.addEventListener("click", () => {

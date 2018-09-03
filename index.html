@@ -84,26 +84,28 @@
 			completed_anchor = filters.children[2].children[0],
 			clear_completed = getElementByClassName("clear-completed");
 
-	function buildElement(name, attrs = {}, children = []) {
+	function buildElement(name, attrs = {}, children = [], hidden = false) {
 		const e = document.createElement(name);
 		Object.entries(attrs).forEach(([k, v]) => e.setAttribute(k, v));
 		children.forEach(child => e.appendChild(child));
+		e.hidden = hidden;
 		return e;
 	}
 
-	function buildTodoEntryElement(todo) {
+	function buildTodoEntryElement(todo, mode) {
 		return buildElement("li", todo.completed ? {class: "completed"} : {}, [buildElement("div", {class: "view"}, [buildElement("input", Object.assign({
 			class: "toggle", type: "checkbox"
 		}, todo.completed ? {checked: true} : {})), buildElement("label", {}, [document.createTextNode(todo.text)]), buildElement("button", {class: "destroy"})]), buildElement("input", {
 			class: "edit", value: ""
-		})]);
+		})], (mode === "active" && todo.completed) || (mode === "completed" && (!todo.completed)));
 	}
 
-	function renderTodos(todos, rendered_todos = todos) {
-		const hide = todos.length === 0;
-		main.hidden = hide;
-		footer.hidden = hide;
-		getElementByClassName("todo-list").replaceWith(buildElement("ul", {class: "todo-list"}, rendered_todos.map(buildTodoEntryElement)));
+	function renderTodos(todos) {
+		const all_hide = todos.length === 0;
+		main.hidden = all_hide;
+		footer.hidden = all_hide;
+		const mode = window.location.href.split("#/")[1] || "";
+		getElementByClassName("todo-list").replaceWith(buildElement("ul", {class: "todo-list"}, todos.map(todo => buildTodoEntryElement(todo, mode))));
 		const active_todos = todos.filter(todo => !todo.completed);
 		getElementByClassName("todo-count").replaceWith(buildElement("span", {class: "todo-count"}, [buildElement("strong", {}, [document.createTextNode(active_todos.length)]), document.createTextNode((active_todos.length === 1 ? " item" : " items") + " left")]));
 		clear_completed.hidden = todos.length === active_todos.length;
@@ -133,11 +135,7 @@
 
 	});
 
-	window.addEventListener("popstate", () => renderTodos(todos, todos.filter({
-		"": () => true,
-		"active": todo => !todo.completed,
-		"completed": todo => todo.completed
-	}[window.location.href.split("#/")[1] || ""])));
+	window.addEventListener("popstate", () => renderTodos(todos));
 
 	clear_completed.addEventListener("click", () => {
 		todos = todos.filter(todo => !todo.completed);

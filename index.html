@@ -126,9 +126,10 @@
 				break;
 		}
 		clear_completed.hidden = todos.length === active_todos.length;
+		localStorage.setItem("todos-asterius", JSON.stringify(todos));
 	}
 
-	let todos = [];
+	let todos = JSON.parse(localStorage.getItem("todos-asterius")) || [];
 
 	renderTodos(todos);
 
@@ -144,16 +145,14 @@
 	});
 
 	toggle_all.addEventListener("click", () => {
-		const completed_flag = todos[0].completed,
-				target_flag = todos.every(todo => todo.completed === completed_flag) ? !completed_flag : true;
-
-		for (let i = 0; i < todos.length; ++i) todos[i].completed = target_flag;
+		for (let i = 0; i < todos.length; ++i) todos[i].completed =
+				toggle_all.checked;
 		renderTodos(todos);
-
 	});
 
 	main.addEventListener("click", ev => {
-		if (ev.target.tagName === "INPUT") {
+		if (ev.target.tagName === "INPUT" && ev.target.getAttribute("class")
+				=== "toggle") {
 			const todo_entry = ev.target.parentElement.parentElement;
 			const i = Array.from(todo_entry.parentElement.childNodes).indexOf(todo_entry);
 			todos[i].completed = !todos[i].completed;
@@ -162,7 +161,8 @@
 	});
 
 	main.addEventListener("dblclick", ev => {
-		if (ev.target.tagName === "LABEL") {
+		if (ev.target.tagName === "LABEL" && ev.target.getAttribute("for")
+				!== "toggle-all") {
 			const todo_entry = ev.target.parentElement.parentElement;
 			const i =
 					Array.from(todo_entry.parentElement.childNodes).indexOf(todo_entry);

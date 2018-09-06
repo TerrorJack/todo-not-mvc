@@ -104,6 +104,7 @@
 	}
 
 	function renderTodos(todos) {
+		toggle_all.checked = todos.every(todo => todo.completed);
 		const all_hide = todos.length === 0;
 		main.hidden = all_hide;
 		footer.hidden = all_hide;

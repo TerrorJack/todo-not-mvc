@@ -93,11 +93,14 @@
 	}
 
 	function buildTodoEntryElement(todo, mode) {
-		return buildElement("li", todo.completed ? {class: "completed"} : {}, [buildElement("div", {class: "view"}, [buildElement("input", Object.assign({
-			class: "toggle", type: "checkbox"
-		}, todo.completed ? {checked: true} : {})), buildElement("label", {}, [document.createTextNode(todo.text)]), buildElement("button", {class: "destroy"})]), buildElement("input", {
-			class: "edit", value: ""
-		})], (mode === "active" && todo.completed) || (mode === "completed" && (!todo.completed)));
+		return buildElement("li",
+				todo.completed ? {key: todo.key, class: "completed"} :
+						{key: todo.key},
+				[buildElement("div", {class: "view"}, [buildElement("input", Object.assign({
+					class: "toggle", type: "checkbox"
+				}, todo.completed ? {checked: true} : {})), buildElement("label", {}, [document.createTextNode(todo.text)]), buildElement("button", {class: "destroy"})]), buildElement("input", {
+					class: "edit", value: ""
+				})], (mode === "active" && todo.completed) || (mode === "completed" && (!todo.completed)));
 	}
 
 	function renderTodos(todos) {
@@ -138,7 +141,11 @@
 			const s = new_todo.value.trim();
 			if (s) {
 				new_todo.value = "";
-				todos.push({text: s, completed: false});
+				todos.push({
+					key: Math.random().toString(36).slice(2), text: s,
+					completed:
+							false
+				});
 				renderTodos(todos);
 			}
 		}
@@ -153,8 +160,9 @@
 	main.addEventListener("click", ev => {
 		if (ev.target.tagName === "INPUT" && ev.target.getAttribute("class")
 				=== "toggle") {
-			const todo_entry = ev.target.parentElement.parentElement;
-			const i = Array.from(todo_entry.parentElement.childNodes).indexOf(todo_entry);
+			const todo_entry = ev.target.parentElement.parentElement, i =
+					todos.findIndex(todo => todo.key ===
+							todo_entry.getAttribute("key"));
 			todos[i].completed = !todos[i].completed;
 			renderTodos(todos);
 		}
@@ -166,7 +174,8 @@
 			const todo_entry = ev.target.parentElement.parentElement,
 					todo_input = todo_entry.children[1],
 					i =
-							Array.from(todo_entry.parentElement.childNodes).indexOf(todo_entry);
+							todos.findIndex(todo => todo.key ===
+									todo_entry.getAttribute("key"));
 			todo_entry.setAttribute("class", "editing");
 			todo_input.value = todos[i].text;
 			todo_input.focus();
@@ -188,7 +197,8 @@
 				"destroy") {
 			const todo_entry = ev.target.parentElement.parentElement,
 					i =
-							Array.from(todo_entry.parentElement.childNodes).indexOf(todo_entry);
+							todos.findIndex(todo => todo.key ===
+									todo_entry.getAttribute("key"));
 			todos.splice(i, 1);
 			renderTodos(todos);
 		}

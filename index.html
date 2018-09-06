@@ -172,11 +172,25 @@
 			todo_input.focus();
 			todo_input.addEventListener("keypress", ev_k => {
 				if (ev_k.key === "Enter") {
-					console.log(todo_input.value);
-					todos[i].text = todo_input.value;
+					const s = todo_input.value.trim();
+					if (s)
+						todos[i].text = todo_input.value;
+					else
+						todos.splice(i, 1);
 					renderTodos(todos);
 				}
 			});
+		}
+	});
+
+	main.addEventListener("click", ev => {
+		if (ev.target.tagName === "BUTTON" && ev.target.getAttribute("class") ===
+				"destroy") {
+			const todo_entry = ev.target.parentElement.parentElement,
+					i =
+							Array.from(todo_entry.parentElement.childNodes).indexOf(todo_entry);
+			todos.splice(i, 1);
+			renderTodos(todos);
 		}
 	});
 

@@ -163,14 +163,17 @@
 	main.addEventListener("dblclick", ev => {
 		if (ev.target.tagName === "LABEL" && ev.target.getAttribute("for")
 				!== "toggle-all") {
-			const todo_entry = ev.target.parentElement.parentElement;
-			const i =
-					Array.from(todo_entry.parentElement.childNodes).indexOf(todo_entry);
+			const todo_entry = ev.target.parentElement.parentElement,
+					todo_input = todo_entry.children[1],
+					i =
+							Array.from(todo_entry.parentElement.childNodes).indexOf(todo_entry);
 			todo_entry.setAttribute("class", "editing");
-			todo_entry.addEventListener("keypress", ev_k => {
+			todo_input.value = todos[i].text;
+			todo_input.focus();
+			todo_input.addEventListener("keypress", ev_k => {
 				if (ev_k.key === "Enter") {
-					console.log(ev.target.children[0].nodeValue);
-					todos[i].text = ev.target.children[0].nodeValue;
+					console.log(todo_input.value);
+					todos[i].text = todo_input.value;
 					renderTodos(todos);
 				}
 			});
